@@ -77,7 +77,7 @@ class PersistentTabView extends PersistentTabViewBase {
     this.controller,
     double navBarHeight = kBottomNavigationBarHeight,
     this.margin = EdgeInsets.zero,
-    this.backgroundColor = CupertinoColors.white,
+    this.backgroundColor = CupertinoColors.black,
     ValueChanged<int>? onItemSelected,
     NeumorphicProperties? neumorphicProperties,
     this.floatingActionButton,
@@ -162,7 +162,7 @@ class PersistentTabView extends PersistentTabViewBase {
     this.selectedTabScreenContext,
     this.hideNavigationBarWhenKeyboardShows = true,
     bool popAllScreensOnTapOfSelectedTab = true,
-    this.backgroundColor = CupertinoColors.white,
+    this.backgroundColor = CupertinoColors.black,
     CustomWidgetRouteAndNavigatorSettings routeAndNavigatorSettings =
         const CustomWidgetRouteAndNavigatorSettings(),
     this.confineInSafeArea = true,
@@ -225,7 +225,7 @@ class PersistentTabViewBase extends StatefulWidget {
   final PersistentTabController? controller;
 
   /// Background color of bottom navigation bar. `white` by default.
-  final Color? backgroundColor;
+  final Color backgroundColor;
 
   /// Callback when page or tab change is detected.
   final ValueChanged<int>? onItemSelected;
@@ -331,7 +331,7 @@ class PersistentTabViewBase extends StatefulWidget {
     this.hideNavigationBar,
     this.context,
     this.items,
-    this.backgroundColor,
+    this.backgroundColor = Colors.black,
     this.onItemSelected,
     this.decoration,
     this.padding,
@@ -477,14 +477,47 @@ class _PersistentTabViewState extends State<PersistentTabView> {
                               _navBarHeight! + widget.margin.top))
                       .abs(),
                   child: GestureDetector(
-                    onTap: () {
-                      if (widget.items![(widget.items!.length / 2).floor()]
-                              .onPressed !=
-                          null) {
-                        widget.items![(widget.items!.length / 2).floor()]
-                            .onPressed!(_contextList[_controller!.index]);
+                    onTapDown: (details) {
+                      // Calculate the left and right bounds of each button
+                      double buttonWidth =
+                          MediaQuery.of(context).size.width / 3;
+                      double navBarCenter =
+                          MediaQuery.of(context).size.width / 2;
+                      double leftButtonBound = navBarCenter - 1.5 * buttonWidth;
+                      double centerButtonBound =
+                          navBarCenter - 0.5 * buttonWidth;
+                      double rightButtonBound =
+                          navBarCenter + 1.5 * buttonWidth;
+
+                      if (details.localPosition.dx >= leftButtonBound &&
+                          details.localPosition.dx < centerButtonBound) {
+                        // Tap was within the left button
+                        if (widget.items![0].onPressed != null) {
+                          widget.items![0]
+                              .onPressed!(_contextList[_controller!.index]);
+                        } else {
+                          _controller!.index = 0;
+                        }
+                      } else if (details.localPosition.dx >=
+                              centerButtonBound &&
+                          details.localPosition.dx < rightButtonBound) {
+                        // Tap was within the middle button
+
+                        if (widget.items![1].onPressed != null) {
+                          widget.items![1]
+                              .onPressed!(_contextList[_controller!.index]);
+                        } else {
+                          _controller!.index = 1;
+                        }
                       } else {
-                        _controller!.index = (widget.items!.length / 2).floor();
+                        // Tap was within the right button
+
+                        if (widget.items![2].onPressed != null) {
+                          widget.items![2]
+                              .onPressed!(_contextList[_controller!.index]);
+                        } else {
+                          _controller!.index = 2;
+                        }
                       }
                     },
                     child: Center(
@@ -512,11 +545,12 @@ class _PersistentTabViewState extends State<PersistentTabView> {
                                     2),
                         width: MediaQuery.of(context).size.width / 5.0 - 30.0,
                         decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(100.0),
-                              topRight: Radius.circular(100.0),
-                            )),
+                          color: Colors.transparent,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(100.0),
+                            topRight: Radius.circular(100.0),
+                          ),
+                        ),
                       ),
                     ),
                   ),
