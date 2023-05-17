@@ -20,7 +20,7 @@ class BottomNavStyle15 extends StatelessWidget {
         fit: StackFit.expand,
         children: <Widget>[
           Transform.translate(
-            offset: Offset(0, -38),
+            offset: Offset(0, -33),
             child: Center(
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -46,7 +46,7 @@ class BottomNavStyle15 extends StatelessWidget {
                         children: <Widget>[
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.all(12.0),
+                              padding: const EdgeInsets.all(12),
                               child: IconTheme(
                                 data: IconThemeData(
                                     size: 16, color: Color(0xFF3d9fa0)),
